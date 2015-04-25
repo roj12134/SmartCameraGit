@@ -29,7 +29,7 @@ public class SmartCamera {
 
         // OR load the native library this way.
         // System.loadLibrary("opencv_java244");
-        System.out.println("Hello, OpenCV");
+        System.out.println("Hello, OpenCV HOLA");
 
         Mat frame = new Mat();
         VideoCapture cap = new VideoCapture(0);
