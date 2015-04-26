@@ -9,6 +9,8 @@ import java.io.File;
 import java.net.URISyntaxException;
 import javax.swing.JOptionPane;
 import org.opencv.core.Core;
+import smartcamera.Controller.MainController;
+import smartcamera.Model.MainModel;
 import smartcamera.View.MainView;
 
 /**
@@ -26,6 +28,8 @@ public class SmartCamera {
         System.out.println(Core.NATIVE_LIBRARY_NAME.toString());
 
         MainView mv = new MainView();
+        MainModel mm = new MainModel();
+        MainController mc = new MainController(mv,mm);
         mv.setExtendedState(6);
         mv.setVisible(true);
 
