@@ -5,14 +5,11 @@
  */
 package smartcamera;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.File;
+import java.net.URISyntaxException;
+import javax.swing.JOptionPane;
 import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.highgui.Highgui;
-import org.opencv.highgui.VideoCapture;
-import org.opencv.imgproc.Imgproc;
+import smartcamera.View.MainView;
 
 /**
  *
@@ -24,37 +21,27 @@ public class SmartCamera {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
+        //Load the class of OPENCV
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        System.out.println(Core.NATIVE_LIBRARY_NAME.toString());
 
-        // OR load the native library this way.
-        // System.loadLibrary("opencv_java244");
-        System.out.println("Hello, OpenCV HOLA");
+        MainView mv = new MainView();
+        mv.setExtendedState(6);
+        mv.setLocationRelativeTo(null);
+        mv.setVisible(true);
 
-        Mat frame = new Mat();
-        VideoCapture cap = new VideoCapture(0);
+    }
 
+    /*
+     Metodo usado en todo el programa para obtener donde esta el jar donde se esta ejecutando el programa 
+     */
+    public static String getPathJar() {
         try {
-            Thread.sleep(500);	// 0.5 sec of a delay. This is not obvious but its necessary
-            // as the camera simply needs time to initialize itself
-        } catch (InterruptedException ex) {
-            Logger.getLogger(SmartCamera.class.getName()).log(Level.SEVERE, null, ex);
+            return new File(SmartCamera.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent();
+        } catch (URISyntaxException ex) {
+            JOptionPane.showMessageDialog(null, "Error en URISyntax Expection ", "Error", 0);
+            return null;
         }
-
-        if (!cap.isOpened()) {
-            System.out.println("Did not connect to camera");
-        } else {
-            System.out.println("found webcam: " + cap.toString());
-        }
-
-        cap.retrieve(frame);// The current frame in the camera is saved in "frame"
-        System.out.println("Captured image with " + frame.width() + " pixels wide by " + frame.height() + " pixels tall.");
-        Highgui.imwrite("me1.jpg", frame);
-        Mat frameBlur = new Mat();
-        Imgproc.blur(frame, frameBlur, new Size(5, 5));
-        Highgui.imwrite("me2-blurred.jpg", frameBlur);
-
-        cap.release(); // Remember to release the camera
     }
 
 }
