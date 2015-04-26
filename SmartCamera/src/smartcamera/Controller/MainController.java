@@ -72,14 +72,14 @@ public class MainController implements MouseListener {
      */
     @Override
     public void mouseClicked(MouseEvent e) {
-        
+
         if (e.getSource() == view.getExitButton() || e.getSource() == view.getExitButton2()) {
             // Before I close the program I will stop the livePanel
             myThread.runnable = false;
             webSource.release();
             // Exit System
             System.exit(0);
-            
+
         } else if (e.getSource() == view.getEditButton()) {
             view.getPanelsContainer().removeAll();
             view.getPanelsContainer().add(view.getEditViewPanel());
@@ -89,10 +89,8 @@ public class MainController implements MouseListener {
             view.getPanelsContainer().add(view.getViewLivePanel());
 
         } else if (e.getSource() == view.getTakePhotoButton()) {
-           
+
             // Take a photo old 
-            
-            
             /*
              VideoCapture camera = new VideoCapture(0);
              try {
@@ -111,14 +109,12 @@ public class MainController implements MouseListener {
              Highgui.imwrite(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken" + File.separator + "capture.jpg", frame);
              camera.release(); // Remember to release the camera
              */
-
         }
 
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -160,7 +156,8 @@ public class MainController implements MouseListener {
                                 }
                             }
                         } catch (Exception ex) {
-                            System.out.println("Error");
+                            // Not use, appears when I set visible false the panel 
+                            // System.out.println("Error");
                         }
                     }
                 }
