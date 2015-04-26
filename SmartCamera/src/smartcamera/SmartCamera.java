@@ -27,7 +27,6 @@ public class SmartCamera {
 
         MainView mv = new MainView();
         mv.setExtendedState(6);
-        mv.setLocationRelativeTo(null);
         mv.setVisible(true);
 
     }
