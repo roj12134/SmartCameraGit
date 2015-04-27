@@ -57,6 +57,9 @@ public class MainView extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         goToCameraButton = new javax.swing.JLabel();
         galleryButton2 = new javax.swing.JLabel();
+        galleryPanel = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -105,7 +108,7 @@ public class MainView extends javax.swing.JFrame {
         );
         livePanelLayout.setVerticalGroup(
             livePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 472, Short.MAX_VALUE)
         );
 
         joystickButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -252,6 +255,35 @@ public class MainView extends javax.swing.JFrame {
 
         panelsContainer.addTab("EditView", editViewPanel);
 
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartcamera/Images/GUI/1430135734_circle_next_arrow_disclosure_-128.png"))); // NOI18N
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartcamera/Images/GUI/1430135689_circle_back_arrow_-128.png"))); // NOI18N
+
+        javax.swing.GroupLayout galleryPanelLayout = new javax.swing.GroupLayout(galleryPanel);
+        galleryPanel.setLayout(galleryPanelLayout);
+        galleryPanelLayout.setHorizontalGroup(
+            galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, galleryPanelLayout.createSequentialGroup()
+                .addGap(0, 886, Short.MAX_VALUE)
+                .addComponent(jLabel2))
+            .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(galleryPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jLabel3)
+                    .addContainerGap(876, Short.MAX_VALUE)))
+        );
+        galleryPanelLayout.setVerticalGroup(
+            galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)
+            .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(galleryPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
+
+        panelsContainer.addTab("tab3", galleryPanel);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -384,12 +416,15 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JLabel fourButton;
     private javax.swing.JLabel galleryButton;
     private javax.swing.JLabel galleryButton2;
+    private javax.swing.JPanel galleryPanel;
     private javax.swing.JLabel goToCameraButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel joystick;
