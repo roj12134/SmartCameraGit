@@ -5,22 +5,30 @@
  */
 package smartcamera.Controller;
 
+import java.awt.AWTException;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Robot;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import smartcamera.Model.MainModel;
+import smartcamera.SmartCamera;
 import smartcamera.View.MainView;
 import static smartcamera.View.MainView._bufImage;
 
@@ -56,6 +64,10 @@ public class MainController implements MouseListener, MouseMotionListener {
 
         // After the start y will start the video 
         webSource = new VideoCapture(0);
+
+        webSource.set(Highgui.CV_CAP_PROP_FRAME_WIDTH, mv.getLivePanel().getWidth());
+        webSource.set(Highgui.CV_CAP_PROP_FRAME_HEIGHT, mv.getLivePanel().getHeight()); // Specifi Size of Web Cam 
+        
         myThread = new DaemonThread();
         Thread t = new Thread(myThread);
         t.setDaemon(true);
@@ -76,6 +88,7 @@ public class MainController implements MouseListener, MouseMotionListener {
         mv.getDrawPanel().addMouseListener(this);  // Panel de dibujo 
         mv.getDrawPanel().addMouseMotionListener(this); // Panel de dibujo 
         mv.getEraseButton().addMouseListener(this);
+        mv.getSaveButton().addMouseListener(this);
 
     }
 
@@ -108,6 +121,15 @@ public class MainController implements MouseListener, MouseMotionListener {
             takenPhoto = buff;
             view.setBackgroundImage(takenPhoto); // Cambio y doy repaint
 
+            // Guardarla en archivo 
+            // Save as JPEG
+            File file = new File(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken" + File.separator + "take.jpg");
+            try {
+                ImageIO.write(takenPhoto, "jpg", file);
+            } catch (IOException ex) {
+                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         } else if (e.getSource() == view.getEraseButton()) {
 
             Graphics2D gio = MainView._bufImage.createGraphics();
@@ -118,6 +140,24 @@ public class MainController implements MouseListener, MouseMotionListener {
             gio.drawImage(MainView._bufImage, 0, 0, view.getDrawPanel().getWidth(), view.getDrawPanel().getHeight(), null);
             view.getDrawPanel().repaint();
             view.getPhotoView().repaint();
+
+        } else if (e.getSource() == view.getSaveButton()) {
+
+            try {
+                // capture the whole screen
+                BufferedImage screencapture = new Robot().createScreenCapture(
+                        new Rectangle(view.getPhotoView().getX(), view.getPhotoView().getY() + view.getPanelName().getHeight() + 15,
+                                view.getPhotoView().getWidth(), view.getPhotoView().getHeight()));
+
+                // Save as JPEG
+                File file = new File(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Saved" + File.separator + "screencapture.jpg");
+                ImageIO.write(screencapture, "jpg", file);
+
+            } catch (AWTException ex) {
+                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
         }
 
@@ -188,6 +228,7 @@ public class MainController implements MouseListener, MouseMotionListener {
                     if (webSource.grab()) {
                         try {
                             webSource.retrieve(frameLive);
+
                             Highgui.imencode(".bmp", frameLive, mem);
                             Image im = ImageIO.read(new ByteArrayInputStream(mem.toArray()));
 
