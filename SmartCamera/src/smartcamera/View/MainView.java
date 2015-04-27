@@ -29,8 +29,6 @@ public class MainView extends javax.swing.JFrame {
      * Creates new form MainView
      */
     // Image
-    public  static Image backgroundImage;
-    public  static BufferedImage _bufImage = null;
     public static Image backgroundImage;
     public static BufferedImage _bufImage = null;
 
