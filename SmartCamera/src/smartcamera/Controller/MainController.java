@@ -12,6 +12,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.highgui.Highgui;
@@ -62,6 +63,8 @@ public class MainController implements MouseListener {
         mv.getEditButton().addMouseListener(this);
         mv.getGoToCameraButton().addMouseListener(this);
         mv.getTakePhotoButton().addMouseListener(this);
+        mv.getGalleryButton().addMouseListener(this);
+        mv.getGalleryButton2().addMouseListener(this);
 
     }
 
@@ -109,6 +112,9 @@ public class MainController implements MouseListener {
              Highgui.imwrite(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken" + File.separator + "capture.jpg", frame);
              camera.release(); // Remember to release the camera
              */
+        } else if (e.getSource() == view.getGalleryButton() || e.getSource() == view.getGalleryButton2()){
+            view.getPanelsContainer().removeAll();
+            view.getPanelsContainer().add(view.getGalleryPanel());
         }
 
     }

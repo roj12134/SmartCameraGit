@@ -350,6 +350,10 @@ public class MainView extends javax.swing.JFrame {
         return livePanel;
     }
 
+    public JPanel getGalleryPanel() {
+        return galleryPanel;
+    }
+    
     public JTabbedPane getPanelsContainer() {
         return panelsContainer;
     }
@@ -366,9 +370,6 @@ public class MainView extends javax.swing.JFrame {
         return threeButton;
     }
     
-    /**
-     * The Getter and Setter of all vars 
-     */
     
     
     
