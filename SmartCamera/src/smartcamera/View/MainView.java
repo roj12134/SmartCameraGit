@@ -65,6 +65,7 @@ public class MainView extends javax.swing.JFrame {
         photo = new javax.swing.JLabel();
         goToCameraButton2 = new javax.swing.JLabel();
         exitButton3 = new javax.swing.JLabel();
+        trash = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -272,14 +273,14 @@ public class MainView extends javax.swing.JFrame {
             galleryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(galleryLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(photo, javax.swing.GroupLayout.DEFAULT_SIZE, 702, Short.MAX_VALUE)
+                .addComponent(photo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         galleryLayout.setVerticalGroup(
             galleryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, galleryLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(photo, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
+                .addComponent(photo, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -288,6 +289,9 @@ public class MainView extends javax.swing.JFrame {
 
         exitButton3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         exitButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartcamera/Images/GUI/1430019599_Log Out.png"))); // NOI18N
+
+        trash.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        trash.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartcamera/Images/GUI/1430138205_24-Empty Trash.png"))); // NOI18N
 
         javax.swing.GroupLayout galleryPanelLayout = new javax.swing.GroupLayout(galleryPanel);
         galleryPanel.setLayout(galleryPanelLayout);
@@ -298,8 +302,12 @@ public class MainView extends javax.swing.JFrame {
                 .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(back)
                     .addComponent(goToCameraButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gallery, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(gallery, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(galleryPanelLayout.createSequentialGroup()
+                        .addComponent(trash, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 572, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(next)
@@ -309,21 +317,24 @@ public class MainView extends javax.swing.JFrame {
         );
         galleryPanelLayout.setVerticalGroup(
             galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(galleryPanelLayout.createSequentialGroup()
-                .addGap(194, 194, 194)
-                .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(back, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(next))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, galleryPanelLayout.createSequentialGroup()
+                .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(galleryPanelLayout.createSequentialGroup()
+                        .addGap(194, 194, 194)
+                        .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(back, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(next)))
+                    .addGroup(galleryPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(gallery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                 .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(exitButton3, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, galleryPanelLayout.createSequentialGroup()
-                        .addComponent(goToCameraButton2)
+                        .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(goToCameraButton2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(trash, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap())))
-            .addGroup(galleryPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(gallery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 62, Short.MAX_VALUE))
         );
 
         panelsContainer.addTab("GalleryView", galleryPanel);
@@ -340,7 +351,7 @@ public class MainView extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelsContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE))
+                .addComponent(panelsContainer))
         );
 
         pack();
@@ -438,6 +449,10 @@ public class MainView extends javax.swing.JFrame {
         return back;
     }
     
+    public JLabel getTrash() {
+        return trash;
+    }
+    
     
     
     /**
@@ -506,5 +521,6 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JPanel photoView;
     private javax.swing.JLabel takePhotoButton;
     private javax.swing.JLabel threeButton;
+    private javax.swing.JLabel trash;
     // End of variables declaration//GEN-END:variables
 }
