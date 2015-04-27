@@ -12,7 +12,14 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.highgui.Highgui;
@@ -29,6 +36,9 @@ public class MainController implements MouseListener {
     // The MVC
     private MainView view = null;
     private MainModel model = null;
+    private ArrayList<ImageIcon> images = new ArrayList<ImageIcon>();
+    private ImageIcon nofoto;//el nombre lo dice todo
+    private int foto=0;
 
     /**
      * Define vars of the program.
@@ -67,6 +77,8 @@ public class MainController implements MouseListener {
         mv.getTakePhotoButton().addMouseListener(this);
         mv.getGalleryButton().addMouseListener(this);
         mv.getGalleryButton2().addMouseListener(this);
+        mv.getNext().addMouseListener(this);
+        mv.getBack().addMouseListener(this);
 
     }
 
@@ -115,21 +127,31 @@ public class MainController implements MouseListener {
              camera.release(); // Remember to release the camera
              */
         } else if (e.getSource() == view.getGalleryButton() || e.getSource() == view.getGalleryButton2()){
-            String sDirectorio = "c:\\datos";
-            File f = new File(sDirectorio);
-
-            if (f.exists()){
-                    // Recuperamos la lista de ficheros
-                    File[] ficheros = f.listFiles();
-                    for (int x=0;x<ficheros.length;x++){
-                            System.out.println(ficheros[x].getName());
-                    }
-            } else{
-                    System.out.println("No existe ese directorio");
-            }
-            view.getPanelsContainer().removeAll();
-            view.getPanelsContainer().add(view.getGalleryPanel());
+            //este evento tomara el panel de la galeria y mostrará todas las fotos que esten en la carpeta de imagenes
+            imagenes();//coloca un array con todas las fotos que esten en una carpeta
+            view.setPhoto(getPreview(foto));//muestra un preview de la primera foto que este en la carpeta
+            view.getPanelsContainer().removeAll();//quita todos los panels de contenedor
+            view.getPanelsContainer().add(view.getGalleryPanel());//coloca el pane de la galeria
+        } else if(e.getSource() == view.getBack()){
+            //Este evento pondra la siguiente fotografia en el preview
+            if(images.size()>0 && foto>0)
+                foto--;
+            else if(images.size()>0 && foto==0)
+                foto=images.size()-1;
+            else if(images.size()==1)
+                foto=0;
+            view.setPhoto(getPreview(foto));//muestra un preview de la  foto que este seleccionada de la carpeta
+        } else if(e.getSource() == view.getNext()){
+            //Este evento pondra la siguiente fotografia en el preview
+            if(images.size()>0 && foto<images.size()-1)
+                foto++;
+            else if(images.size()>0 && foto==images.size()-1)
+                foto=0;
+            else if(images.size()==1)
+                foto=0;
+            view.setPhoto(getPreview(foto));//muestra un preview de la  foto que este seleccionada de la carpeta
         }
+        
 
     }
 
@@ -149,6 +171,40 @@ public class MainController implements MouseListener {
     public void mouseExited(MouseEvent e) {
     }
 
+    public void imagenes(){
+        String sDirectorio = System.getProperty("user.dir")+"\\Images";
+        File f = new File(sDirectorio);
+        //System.out.println(f.getAbsolutePath());
+        if (f.exists()){
+                // Recuperamos la lista de ficheros
+                File[] ficheros = f.listFiles();
+                for (int x=0;x<ficheros.length;x++){
+                    try {
+                        //System.out.println(ficheros[x].getName());
+                        images.add(new javax.swing.ImageIcon(ficheros[x].toURL()));
+                    } catch (MalformedURLException ex) {
+                        Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+        } else{
+                JOptionPane.showMessageDialog(null, "No hay fotos.");
+                //System.out.println("No existe ese directorio");
+        }
+    }
+    
+    public Icon getPreview(int num){
+        nofoto = new javax.swing.ImageIcon(System.getProperty("user.dir")+"\\src\\smartcamera\\Images\\GUI\\nofoto.gif");
+        if( num>=0 & num<images.size() )
+        {
+            Image mini = images.get(num).getImage().getScaledInstance(view.getPhoto().getWidth(), view.getPhoto().getHeight(), Image.SCALE_AREA_AVERAGING);
+            return new ImageIcon(mini);
+        }
+        else
+        {
+            Image mini = nofoto.getImage().getScaledInstance(view.getPhoto().getWidth(), view.getPhoto().getHeight(), Image.SCALE_AREA_AVERAGING);
+            return new ImageIcon(mini);
+        }
+    }
     /**
      * A Class for video on JPanel
      */

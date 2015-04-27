@@ -5,6 +5,7 @@
  */
 package smartcamera.View;
 
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -61,7 +62,7 @@ public class MainView extends javax.swing.JFrame {
         next = new javax.swing.JLabel();
         back = new javax.swing.JLabel();
         gallery = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
+        photo = new javax.swing.JLabel();
         goToCameraButton2 = new javax.swing.JLabel();
         exitButton3 = new javax.swing.JLabel();
 
@@ -271,14 +272,14 @@ public class MainView extends javax.swing.JFrame {
             galleryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(galleryLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 702, Short.MAX_VALUE)
+                .addComponent(photo, javax.swing.GroupLayout.DEFAULT_SIZE, 702, Short.MAX_VALUE)
                 .addContainerGap())
         );
         galleryLayout.setVerticalGroup(
             galleryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, galleryLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
+                .addComponent(photo, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -421,6 +422,21 @@ public class MainView extends javax.swing.JFrame {
         return threeButton;
     }
     
+    public JLabel getPhoto() {
+        return photo;
+    }
+    
+    public void setPhoto(Icon image) {
+        photo.setIcon(image);
+    }
+    
+    public JLabel getNext() {
+        return next;
+    }
+    
+    public JLabel getBack() {
+        return back;
+    }
     
     
     
@@ -479,7 +495,6 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel joystick;
@@ -487,6 +502,7 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JPanel livePanel;
     private javax.swing.JLabel next;
     private javax.swing.JTabbedPane panelsContainer;
+    private javax.swing.JLabel photo;
     private javax.swing.JPanel photoView;
     private javax.swing.JLabel takePhotoButton;
     private javax.swing.JLabel threeButton;
