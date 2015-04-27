@@ -32,6 +32,8 @@ public class MainView extends javax.swing.JFrame {
     public static Image backgroundImage;
     public static BufferedImage _bufImage = null;
 
+    
+
     // Enum
     public static enum Shape {
 
@@ -388,8 +390,12 @@ public class MainView extends javax.swing.JFrame {
     }
 
     public JLabel getExitButton2() {
+       
         return exitButton2;
+        
     }
+    
+    
 
     public JLabel getFourButton() {
         return fourButton;
@@ -454,6 +460,7 @@ public class MainView extends javax.swing.JFrame {
     public JPanel getPanelName() {
         return panelName;
     }
+    
     
     
     
