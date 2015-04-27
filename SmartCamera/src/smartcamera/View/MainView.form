@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.9" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="undecorated" type="boolean" value="true"/>
@@ -33,7 +33,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="panelsContainer" pref="639" max="32767" attributes="0"/>
+              <Component id="panelsContainer" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -59,7 +59,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="24" max="32767" attributes="0"/>
+                  <EmptySpace pref="43" max="32767" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -124,7 +124,7 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace min="0" pref="19" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="6" max="32767" attributes="0"/>
                       <Component id="galleryButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="editButton" min="-2" max="-2" attributes="0"/>
@@ -255,13 +255,13 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel12" min="-2" pref="136" max="-2" attributes="0"/>
+                              <Component id="eraseButton" min="-2" pref="136" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabel11" min="-2" pref="136" max="-2" attributes="0"/>
+                              <Component id="colorButton" min="-2" pref="136" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabel14" min="-2" pref="136" max="-2" attributes="0"/>
+                              <Component id="noColorButton" min="-2" pref="136" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
+                              <Component id="saveButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="exitButton2" min="-2" pref="136" max="-2" attributes="0"/>
                           </Group>
@@ -273,7 +273,7 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace pref="19" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="galleryButton2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="goToCameraButton" min="-2" max="-2" attributes="0"/>
@@ -286,11 +286,11 @@
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Group type="103" alignment="1" groupAlignment="0" attributes="0">
                               <Component id="exitButton2" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel11" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel12" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel14" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="colorButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="eraseButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="noColorButton" alignment="1" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jLabel13" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="saveButton" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -313,55 +313,48 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel11">
+            <Component class="javax.swing.JLabel" name="colorButton">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="0"/>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/smartcamera/Images/GUI/1430022678_Camera-2.png"/>
+                  <Image iconType="3" name="/smartcamera/Images/GUI/1430134745_color.png"/>
                 </Property>
               </Properties>
             </Component>
             <Container class="javax.swing.JPanel" name="photoView">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="33" green="cc" red="ff" type="rgb"/>
+                  <Color blue="0" green="99" red="99" type="rgb"/>
                 </Property>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JPanel()&#xa;{&#xa;&#xa;    public void paintComponent(Graphics g) {&#xa;        super.paintComponent(g);&#xa;        g.drawImage(backgroundImage, 0, 0, photoView.getWidth(), photoView.getHeight(), null);&#xa;        &#xa;    }&#xa;&#xa;    public Dimension getPreferredSize() {&#xa;        return new Dimension(backgroundImage.getWidth(this), backgroundImage.getHeight(this));&#xa;    }&#xa;&#xa;}&#xa;"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="photoView.add(drawPanel);"/>
+              </AuxValues>
 
-              <Layout>
-                <DimensionLayout dim="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                  </Group>
-                </DimensionLayout>
-                <DimensionLayout dim="1">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                  </Group>
-                </DimensionLayout>
-              </Layout>
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
             </Container>
-            <Component class="javax.swing.JLabel" name="jLabel12">
+            <Component class="javax.swing.JLabel" name="eraseButton">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="0"/>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/smartcamera/Images/GUI/1430019941_Games.png"/>
+                  <Image iconType="3" name="/smartcamera/Images/GUI/1430134543_draft.png"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel13">
+            <Component class="javax.swing.JLabel" name="saveButton">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="0"/>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/smartcamera/Images/GUI/1430023233_ic_looks_4_48px-128.png"/>
+                  <Image iconType="3" name="/smartcamera/Images/GUI/1430135609_save_all.png"/>
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel14">
+            <Component class="javax.swing.JLabel" name="noColorButton">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="0"/>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/smartcamera/Images/GUI/1430023225_ic_looks_3_48px-128.png"/>
+                  <Image iconType="3" name="/smartcamera/Images/GUI/1430135111_698982-icon-135-pen-angled-128.png"/>
                 </Property>
               </Properties>
             </Component>

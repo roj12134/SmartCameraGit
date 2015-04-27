@@ -5,10 +5,14 @@
  */
 package smartcamera.Controller;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import javax.imageio.ImageIO;
@@ -18,12 +22,13 @@ import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import smartcamera.Model.MainModel;
 import smartcamera.View.MainView;
+import static smartcamera.View.MainView._bufImage;
 
 /**
  *
  * @author Gio
  */
-public class MainController implements MouseListener {
+public class MainController implements MouseListener, MouseMotionListener {
 
     // The MVC
     private MainView view = null;
@@ -33,11 +38,17 @@ public class MainController implements MouseListener {
      * Define vars of the program.
      */
     private DaemonThread myThread = null;
-    int count = 0;
-    VideoCapture webSource = null;
+    private int count = 0;
+    private VideoCapture webSource = null;
 
-    Mat frameLive = new Mat();
-    MatOfByte mem = new MatOfByte();
+    private Mat frameLive = new Mat();
+    private MatOfByte mem = new MatOfByte();
+
+    // Var of the photo taken
+    private BufferedImage buff = null;
+
+    // taken Photo
+    private BufferedImage takenPhoto = null;
 
     public MainController(MainView mv, MainModel mm) {
         view = mv; // Instancio la vista aqui 
@@ -62,6 +73,9 @@ public class MainController implements MouseListener {
         mv.getEditButton().addMouseListener(this);
         mv.getGoToCameraButton().addMouseListener(this);
         mv.getTakePhotoButton().addMouseListener(this);
+        mv.getDrawPanel().addMouseListener(this);  // Panel de dibujo 
+        mv.getDrawPanel().addMouseMotionListener(this); // Panel de dibujo 
+        mv.getEraseButton().addMouseListener(this);
 
     }
 
@@ -81,8 +95,7 @@ public class MainController implements MouseListener {
             System.exit(0);
 
         } else if (e.getSource() == view.getEditButton()) {
-            view.getPanelsContainer().removeAll();
-            view.getPanelsContainer().add(view.getEditViewPanel());
+            // Have to work on it 
 
         } else if (e.getSource() == view.getGoToCameraButton()) {
             view.getPanelsContainer().removeAll();
@@ -90,25 +103,22 @@ public class MainController implements MouseListener {
 
         } else if (e.getSource() == view.getTakePhotoButton()) {
 
-            // Take a photo old 
-            /*
-             VideoCapture camera = new VideoCapture(0);
-             try {
-             Thread.sleep(1000);
-             } catch (Exception e) {
-             e.printStackTrace();
-             }
-             if (!camera.isOpened()) {
-             System.out.println("Camera Error");
-             } else {
-             System.out.println("Camera OK?");
-             }
+            view.getPanelsContainer().removeAll();
+            view.getPanelsContainer().add(view.getEditViewPanel());
+            takenPhoto = buff;
+            view.setBackgroundImage(takenPhoto); // Cambio y doy repaint
 
-             Mat frame = new Mat();
-             camera.read(frame);
-             Highgui.imwrite(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken" + File.separator + "capture.jpg", frame);
-             camera.release(); // Remember to release the camera
-             */
+        } else if (e.getSource() == view.getEraseButton()) {
+
+            Graphics2D gio = MainView._bufImage.createGraphics();
+
+            gio.clearRect(0, 0, view.getDrawPanel().getWidth(), view.getDrawPanel().getHeight());
+            _bufImage = new BufferedImage(view.getDrawPanel().getWidth(), view.getDrawPanel().getHeight(), BufferedImage.TRANSLUCENT);
+
+            gio.drawImage(MainView._bufImage, 0, 0, view.getDrawPanel().getWidth(), view.getDrawPanel().getHeight(), null);
+            view.getDrawPanel().repaint();
+            view.getPhotoView().repaint();
+
         }
 
     }
@@ -119,6 +129,11 @@ public class MainController implements MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
+
+        if (e.getSource() == view.getDrawPanel()) {
+            MainView._state = MainView.State.IDLE;
+        }
+
     }
 
     @Override
@@ -127,6 +142,36 @@ public class MainController implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (e.getSource() == view.getDrawPanel()) {
+
+            MainView._state = MainView.State.DRAGGING;
+            MainView._end = e.getPoint();
+            if (MainView._state == MainView.State.DRAGGING) {
+                Graphics2D g2 = MainView._bufImage.createGraphics();
+                g2.setColor(Color.BLUE);
+                g2.setStroke(new BasicStroke(2));
+                g2.drawLine(MainView._start.x, MainView._start.y, MainView._end.x, MainView._end.y);
+                view.getDrawPanel().repaint();
+                view.getPhotoView().repaint();
+            }
+            MainView._start = MainView._end;
+        }
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+        if (e.getSource() == view.getDrawPanel()) {
+
+            MainView._start = e.getPoint();
+
+        }
+
     }
 
     /**
@@ -146,10 +191,12 @@ public class MainController implements MouseListener {
                             Highgui.imencode(".bmp", frameLive, mem);
                             Image im = ImageIO.read(new ByteArrayInputStream(mem.toArray()));
 
-                            BufferedImage buff = (BufferedImage) im;
+                            buff = (BufferedImage) im;
                             Graphics g = view.getLivePanel().getGraphics();
 
-                            if (g.drawImage(buff, 0, 0, view.getWidth(), view.getHeight() - 150, 0, 0, buff.getWidth(), buff.getHeight(), null)) {
+                            //if (g.drawImage(buff, 0, 0, view.getWidth(), view.getHeight() - 150, 0, 0, buff.getWidth(), buff.getHeight(), null)) {
+                            if (g.drawImage(buff, 0, 0, view.getLivePanel().getWidth(), view.getLivePanel().getHeight(), null)) {
+
                                 if (runnable == false) {
                                     System.out.println("Going to wait()");
                                     this.wait();
