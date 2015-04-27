@@ -11,8 +11,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.highgui.Highgui;
@@ -60,8 +60,10 @@ public class MainController implements MouseListener {
         // metodos correspondientes 
         mv.getExitButton().addMouseListener(this); // Events comes a live 
         mv.getExitButton2().addMouseListener(this);
+        mv.getExitButton3().addMouseListener(this);
         mv.getEditButton().addMouseListener(this);
         mv.getGoToCameraButton().addMouseListener(this);
+        mv.getGoToCameraButton2().addMouseListener(this);
         mv.getTakePhotoButton().addMouseListener(this);
         mv.getGalleryButton().addMouseListener(this);
         mv.getGalleryButton2().addMouseListener(this);
@@ -76,7 +78,7 @@ public class MainController implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        if (e.getSource() == view.getExitButton() || e.getSource() == view.getExitButton2()) {
+        if (e.getSource() == view.getExitButton() || e.getSource() == view.getExitButton2() || e.getSource() == view.getExitButton3()) {
             // Before I close the program I will stop the livePanel
             myThread.runnable = false;
             webSource.release();
@@ -87,7 +89,7 @@ public class MainController implements MouseListener {
             view.getPanelsContainer().removeAll();
             view.getPanelsContainer().add(view.getEditViewPanel());
 
-        } else if (e.getSource() == view.getGoToCameraButton()) {
+        } else if (e.getSource() == view.getGoToCameraButton() || e.getSource() == view.getGoToCameraButton2()) {
             view.getPanelsContainer().removeAll();
             view.getPanelsContainer().add(view.getViewLivePanel());
 
@@ -113,6 +115,18 @@ public class MainController implements MouseListener {
              camera.release(); // Remember to release the camera
              */
         } else if (e.getSource() == view.getGalleryButton() || e.getSource() == view.getGalleryButton2()){
+            String sDirectorio = "c:\\datos";
+            File f = new File(sDirectorio);
+
+            if (f.exists()){
+                    // Recuperamos la lista de ficheros
+                    File[] ficheros = f.listFiles();
+                    for (int x=0;x<ficheros.length;x++){
+                            System.out.println(ficheros[x].getName());
+                    }
+            } else{
+                    System.out.println("No existe ese directorio");
+            }
             view.getPanelsContainer().removeAll();
             view.getPanelsContainer().add(view.getGalleryPanel());
         }
