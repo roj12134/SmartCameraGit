@@ -31,6 +31,8 @@ public class MainView extends javax.swing.JFrame {
     // Image
     public  static Image backgroundImage;
     public  static BufferedImage _bufImage = null;
+    public static Image backgroundImage;
+    public static BufferedImage _bufImage = null;
 
     // Enum
     public static enum Shape {
