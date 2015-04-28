@@ -356,7 +356,7 @@ public class MainController implements MouseListener, MouseMotionListener {
 
     //Pone la imagen en el label como preview de la foto, en caso de no haber una foto pone una imagen de que no hay fotos que mostrar
     public Icon getPreview(int num) {
-        nofoto = new javax.swing.ImageIcon(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "GUI" + File.separator + "nofoto.gif");//foto en caso de que no haya una foto que mostrar
+        nofoto = new javax.swing.ImageIcon(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "GUI" + File.separator + "noPhoto.png");//foto en caso de que no haya una foto que mostrar
         if (num >= 0 & num < images.size())//en caso de que si hayan fotos
         {
             //coloca la imagen que se desea en el label con el tamaño del label
