@@ -241,24 +241,26 @@ public class MainController implements MouseListener, MouseMotionListener {
             File[] ficheros = f.listFiles();
             antFoto = foto;
             //Este evento borra la imagen que este seleccionada en el preview
-            if (images.size() > 0 && foto < (images.size()-1)) {
-                foto+=1;
-            } else if (images.size() > 0 && foto == (images.size()-1)) {
-                foto=0;
-            } else if (images.size() == 1) {
-                foto = 0;
-            }
             if (ficheros.length > 0) {
                 if (ficheros[antFoto].delete()) {
                     JOptionPane.showMessageDialog(null, "La imagen ha sido borrada.");
                 } else {
                     JOptionPane.showMessageDialog(null, "La imagen no se pudo borrar.");
                 }
-            } else {
+            } 
+            else {
                 JOptionPane.showMessageDialog(null, "No hay imagenes que puedan ser borradas.");
+            } 
+            if (images.isEmpty()) {
+                foto = 0;
+            } else if ((images.size()-1)>=0 && foto==(images.size()-2)) {
+                foto=0;
+            } else{
+                foto+=1;
             }
-            images.clear();
-            imagenes(sr);
+            images.remove(antFoto);
+            if(foto>=images.size())
+                foto=0;
             view.setPhoto(getPreview(foto));//muestra un preview de la  foto que este seleccionada de la carpeta
             
         } else if (e.getSource() == view.getPhoto()) {
@@ -334,7 +336,7 @@ public class MainController implements MouseListener, MouseMotionListener {
         //Toma las fotografias que esten en la carpeta y las asigna a una lista de imagenesString sDirectorio = System.getProperty("user.dir")+"\\Images";
         String sDirectorio = SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + src;
         File f = new File(sDirectorio);
-        System.out.println(""+sDirectorio+" "+sr);
+        //System.out.println(""+sDirectorio+" "+sr);
         // Recuperamos la lista de ficheros
         File[] ficheros = f.listFiles();
         images.clear();
