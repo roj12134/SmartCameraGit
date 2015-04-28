@@ -53,7 +53,7 @@ public class MainController implements MouseListener, MouseMotionListener {
     private MainModel model = null;
     private ArrayList<ImageIcon> images = new ArrayList<ImageIcon>();
     private ImageIcon nofoto;//el nombre lo dice todo
-    private int foto = 0, antFoto = 0;
+    int foto = 0, antFoto = 0;
 
     /**
      * Define vars of the program.
@@ -210,10 +210,10 @@ public class MainController implements MouseListener, MouseMotionListener {
             view.getPanelsContainer().add(view.getGalleryPanel());//coloca el pane de la galeria
         } else if (e.getSource() == view.getBack()) {
             //Este evento pondra la siguiente fotografia en el preview
-            if (images.size() > 0 && foto > 0) {
-                foto--;
+            if (images.size() > 0 && foto >= 1) {
+                foto-=1;
             } else if (images.size() > 0 && foto == 0) {
-                foto = images.size() - 1;
+                foto = images.size()-1;
             } else if (images.size() == 1) {
                 foto = 0;
             }
@@ -221,7 +221,7 @@ public class MainController implements MouseListener, MouseMotionListener {
         } else if (e.getSource() == view.getNext()) {
             //Este evento pondra la siguiente fotografia en el preview
             if (images.size() > 0 && foto < images.size() - 1) {
-                foto++;
+                foto+=1;
             } else if (images.size() > 0 && foto == images.size() - 1) {
                 foto = 0;
             } else if (images.size() == 1) {
@@ -235,18 +235,20 @@ public class MainController implements MouseListener, MouseMotionListener {
             File[] ficheros = f.listFiles();
             antFoto = foto;
             //Este evento borra la imagen que este seleccionada en el preview
-            if (images.size() > 0 && foto < images.size() - 1) {
-                foto++;
-            } else if (images.size() > 0 && foto == images.size() - 1) {
-                foto = 0;
+            if (images.size() > 0 && foto <= (images.size() - 2)) {
+                foto+=1;
+            } else if (images.size() > 0 && foto == (images.size()-1)) {
+                foto-=1;
             } else if (images.size() == 1) {
                 foto = 0;
             }
-            if (ficheros.length > 0) {
-                if (ficheros[antFoto].delete()) {
-                    JOptionPane.showMessageDialog(null, "La imagen ha sido borrada.");
-                } else {
-                    JOptionPane.showMessageDialog(null, "La imagen no se pudo borrar.");
+            if (ficheros.length > 0 && ficheros.length<antFoto) {
+                if (ficheros[antFoto].toString().endsWith(".jpg")){
+                    if (ficheros[antFoto].delete()) {
+                        JOptionPane.showMessageDialog(null, "La imagen ha sido borrada.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "La imagen no se pudo borrar.");
+                    }
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "No hay imagenes que puedan ser borradas.");
@@ -340,7 +342,7 @@ public class MainController implements MouseListener, MouseMotionListener {
             for (int x = 0; x < ficheros.length; x++) {
                 try {
                     if (ficheros[x].toString().endsWith(".jpg")) {
-                        
+                        System.out.println(ficheros[x].toString());
                         //Se colocan las imagenes en la lista
                         images.add(new javax.swing.ImageIcon(ficheros[x].toURL()));
                     }
