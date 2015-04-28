@@ -555,6 +555,7 @@ public class MainView extends javax.swing.JFrame {
     public JPanel getPanelName() {
         return panelName;
     }
+    
 
     /**
      * The Getter and Setter of all vars

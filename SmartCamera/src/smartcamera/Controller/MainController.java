@@ -54,6 +54,7 @@ public class MainController implements MouseListener, MouseMotionListener {
     private ArrayList<ImageIcon> images = new ArrayList<ImageIcon>();
     private ImageIcon nofoto;//el nombre lo dice todo
     int foto = 0, antFoto = 0;
+    private String sr="";
 
     /**
      * Define vars of the program.
@@ -96,7 +97,6 @@ public class MainController implements MouseListener, MouseMotionListener {
         mv.getExitButton().addMouseListener(this); // Events comes a live 
         mv.getExitButton2().addMouseListener(this);
         mv.getExitButton3().addMouseListener(this);
-        mv.getEditButton().addMouseListener(this);
         mv.getGoToCameraButton().addMouseListener(this);
         mv.getGoToCameraButton2().addMouseListener(this);
         mv.getTakePhotoButton().addMouseListener(this);
@@ -110,6 +110,7 @@ public class MainController implements MouseListener, MouseMotionListener {
         mv.getGalleryButton2().addMouseListener(this);
         mv.getNext().addMouseListener(this);
         mv.getBack().addMouseListener(this);
+        mv.getEditButton().addMouseListener(this);
         mv.getTrash().addMouseListener(this);
         mv.getPhoto().addMouseListener(this);
 
@@ -129,9 +130,6 @@ public class MainController implements MouseListener, MouseMotionListener {
             webSource.release();
             // Exit System
             System.exit(0);
-
-        } else if (e.getSource() == view.getEditButton()) {
-            // Have to work on it 
 
         } else if (e.getSource() == view.getGoToCameraButton() || e.getSource() == view.getGoToCameraButton2()) {
             view.getPanelsContainer().removeAll();
@@ -204,8 +202,16 @@ public class MainController implements MouseListener, MouseMotionListener {
              */
         } else if (e.getSource() == view.getGalleryButton() || e.getSource() == view.getGalleryButton2()) {
             //este evento tomara el panel de la galeria y mostrará todas las fotos que esten en la carpeta de imagenes
-            imagenes();//coloca un array con todas las fotos que esten en una carpeta
+            sr="Saved";
+            imagenes(sr);//coloca un array con todas las fotos que esten en una carpeta
             view.setPhoto(getPreview(foto));//muestra un preview de la primera foto que este en la carpeta
+            view.getPanelsContainer().removeAll();//quita todos los panels de contenedor
+            view.getPanelsContainer().add(view.getGalleryPanel());//coloca el pane de la galeria
+        } else if (e.getSource() == view.getEditButton()) {
+            //este evento tomara el panel de la galeria y mostrará todas las fotos que esten en la carpeta de imagenes
+            sr="Taken";
+            imagenes(sr);//coloca un array con todas las fotos que esten en una carpeta
+            view.setPhoto(getPreview(foto));//mue1stra un preview de la primera foto que este en la carpeta
             view.getPanelsContainer().removeAll();//quita todos los panels de contenedor
             view.getPanelsContainer().add(view.getGalleryPanel());//coloca el pane de la galeria
         } else if (e.getSource() == view.getBack()) {
@@ -229,41 +235,34 @@ public class MainController implements MouseListener, MouseMotionListener {
             }
             view.setPhoto(getPreview(foto));//muestra un preview de la  foto que este seleccionada de la carpeta
         } else if (e.getSource() == view.getTrash()) {
-            String sDirectorio = SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken";
+            String sDirectorio = SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + sr;
             File f = new File(sDirectorio);
             // Recuperamos la lista de ficheros
             File[] ficheros = f.listFiles();
             antFoto = foto;
             //Este evento borra la imagen que este seleccionada en el preview
-            if (images.size() > 0 && foto <= (images.size() - 2)) {
+            if (images.size() > 0 && foto < (images.size()-1)) {
                 foto+=1;
             } else if (images.size() > 0 && foto == (images.size()-1)) {
-                foto-=1;
+                foto=0;
             } else if (images.size() == 1) {
                 foto = 0;
             }
-            if (ficheros.length > 0 && ficheros.length<antFoto) {
-                if (ficheros[antFoto].toString().endsWith(".jpg")){
-                    if (ficheros[antFoto].delete()) {
-                        JOptionPane.showMessageDialog(null, "La imagen ha sido borrada.");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "La imagen no se pudo borrar.");
-                    }
+            if (ficheros.length > 0) {
+                if (ficheros[antFoto].delete()) {
+                    JOptionPane.showMessageDialog(null, "La imagen ha sido borrada.");
+                } else {
+                    JOptionPane.showMessageDialog(null, "La imagen no se pudo borrar.");
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "No hay imagenes que puedan ser borradas.");
             }
             images.clear();
-            imagenes();
+            imagenes(sr);
             view.setPhoto(getPreview(foto));//muestra un preview de la  foto que este seleccionada de la carpeta
+            
         } else if (e.getSource() == view.getPhoto()) {
-            //Aquí se abrira el visor de imagenes por default con la imagen que este en el preview
-            try {
-                File archivo = new File(getFile(foto));
-                Desktop.getDesktop().open(archivo);
-            } catch (IOException ex) {
-
-            }
+            //Aquí se abrira la imagen en el panel para ser editada
         }
 
     }
@@ -331,18 +330,19 @@ public class MainController implements MouseListener, MouseMotionListener {
         return images.get(g).toString().substring(6);
     }
 
-    public void imagenes() {
+    public void imagenes(String src) {
         //Toma las fotografias que esten en la carpeta y las asigna a una lista de imagenesString sDirectorio = System.getProperty("user.dir")+"\\Images";
-        String sDirectorio = SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken";
+        String sDirectorio = SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + src;
         File f = new File(sDirectorio);
+        System.out.println(""+sDirectorio+" "+sr);
         // Recuperamos la lista de ficheros
         File[] ficheros = f.listFiles();
-
+        images.clear();
         if (f.exists()) {
             for (int x = 0; x < ficheros.length; x++) {
                 try {
                     if (ficheros[x].toString().endsWith(".jpg")) {
-                        System.out.println(ficheros[x].toString());
+                        //System.out.println(ficheros[x].toString());
                         //Se colocan las imagenes en la lista
                         images.add(new javax.swing.ImageIcon(ficheros[x].toURL()));
                     }
