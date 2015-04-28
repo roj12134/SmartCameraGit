@@ -8,6 +8,7 @@ package smartcamera.Controller;
 import java.awt.AWTException;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -21,10 +22,15 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import org.opencv.core.Mat;
@@ -89,10 +95,10 @@ public class MainController implements MouseListener, MouseMotionListener {
         // metodos correspondientes 
         mv.getExitButton().addMouseListener(this); // Events comes a live 
         mv.getExitButton2().addMouseListener(this);
-        //mv.getExitButton3().addMouseListener(this);
+        mv.getExitButton3().addMouseListener(this);
         mv.getEditButton().addMouseListener(this);
         mv.getGoToCameraButton().addMouseListener(this);
-        //mv.getGoToCameraButton2().addMouseListener(this);
+        mv.getGoToCameraButton2().addMouseListener(this);
         mv.getTakePhotoButton().addMouseListener(this);
 
         mv.getDrawPanel().addMouseListener(this);  // Panel de dibujo 
@@ -102,9 +108,10 @@ public class MainController implements MouseListener, MouseMotionListener {
 
         mv.getGalleryButton().addMouseListener(this);
         mv.getGalleryButton2().addMouseListener(this);
-        //mv.getNext().addMouseListener(this);
-        //mv.getBack().addMouseListener(this);
-       // mv.getTrash().addMouseListener(this);
+        mv.getNext().addMouseListener(this);
+        mv.getBack().addMouseListener(this);
+        mv.getTrash().addMouseListener(this);
+        mv.getPhoto().addMouseListener(this);
 
     }
 
@@ -116,7 +123,7 @@ public class MainController implements MouseListener, MouseMotionListener {
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        if (e.getSource() == view.getExitButton() || e.getSource() == view.getExitButton2() ) {
+        if (e.getSource() == view.getExitButton() || e.getSource() == view.getExitButton2() || e.getSource() == view.getExitButton3()) {
             // Before I close the program I will stop the livePanel
             myThread.runnable = false;
             webSource.release();
@@ -126,7 +133,7 @@ public class MainController implements MouseListener, MouseMotionListener {
         } else if (e.getSource() == view.getEditButton()) {
             // Have to work on it 
 
-        } else if (e.getSource() == view.getGoToCameraButton() ) {
+        } else if (e.getSource() == view.getGoToCameraButton() || e.getSource() == view.getGoToCameraButton2()) {
             view.getPanelsContainer().removeAll();
             view.getPanelsContainer().add(view.getViewLivePanel());
 
@@ -139,7 +146,7 @@ public class MainController implements MouseListener, MouseMotionListener {
 
             // Guardarla en archivo 
             // Save as JPEG
-            File file = new File(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken" + File.separator + "take.jpg");
+            File file = new File(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken" + File.separator + "take"+getTimeNow()+".jpg");
             try {
                 ImageIO.write(takenPhoto, "jpg", file);
             } catch (IOException ex) {
@@ -158,6 +165,7 @@ public class MainController implements MouseListener, MouseMotionListener {
             view.getPhotoView().repaint();
 
         } else if (e.getSource() == view.getSaveButton()) {
+            
 
             try {
                 // capture the whole screen
@@ -166,7 +174,7 @@ public class MainController implements MouseListener, MouseMotionListener {
                                 view.getPhotoView().getWidth(), view.getPhotoView().getHeight()));
 
                 // Save as JPEG
-                File file = new File(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Saved" + File.separator + "screencapture.jpg");
+                File file = new File(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Saved" + File.separator + "screencapture"+getTimeNow()+".jpg");
                 ImageIO.write(screencapture, "jpg", file);
 
             } catch (AWTException ex) {
@@ -197,11 +205,10 @@ public class MainController implements MouseListener, MouseMotionListener {
         } else if (e.getSource() == view.getGalleryButton() || e.getSource() == view.getGalleryButton2()) {
             //este evento tomara el panel de la galeria y mostrará todas las fotos que esten en la carpeta de imagenes
             imagenes();//coloca un array con todas las fotos que esten en una carpeta
-           // view.setPhoto(getPreview(foto));//muestra un preview de la primera foto que este en la carpeta
+            view.setPhoto(getPreview(foto));//muestra un preview de la primera foto que este en la carpeta
             view.getPanelsContainer().removeAll();//quita todos los panels de contenedor
-            //view.getPanelsContainer().add(view.getGalleryPanel());//coloca el pane de la galeria
-        } 
-        /*else if (e.getSource() == view.getBack()) {
+            view.getPanelsContainer().add(view.getGalleryPanel());//coloca el pane de la galeria
+        } else if (e.getSource() == view.getBack()) {
             //Este evento pondra la siguiente fotografia en el preview
             if (images.size() > 0 && foto > 0) {
                 foto--;
@@ -222,7 +229,7 @@ public class MainController implements MouseListener, MouseMotionListener {
             }
             view.setPhoto(getPreview(foto));//muestra un preview de la  foto que este seleccionada de la carpeta
         } else if (e.getSource() == view.getTrash()) {
-            String sDirectorio = System.getProperty("user.dir") + "\\Images";
+            String sDirectorio = SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken";
             File f = new File(sDirectorio);
             // Recuperamos la lista de ficheros
             File[] ficheros = f.listFiles();
@@ -247,8 +254,15 @@ public class MainController implements MouseListener, MouseMotionListener {
             images.clear();
             imagenes();
             view.setPhoto(getPreview(foto));//muestra un preview de la  foto que este seleccionada de la carpeta
+        } else if (e.getSource() == view.getPhoto()) {
+            //Aquí se abrira el visor de imagenes por default con la imagen que este en el preview
+            try {
+                File archivo = new File(getFile(foto));
+                Desktop.getDesktop().open(archivo);
+            } catch (IOException ex) {
 
-        }*/
+            }
+        }
 
     }
 
@@ -302,10 +316,22 @@ public class MainController implements MouseListener, MouseMotionListener {
         }
 
     }
+    
+    public String getTimeNow(){
+        
+            Date date = Calendar.getInstance().getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_hhmmss");
+            return (sdf.format(date));
+    }
+
+    //devuelve la ruta de acceso
+    public String getFile(int g) {
+        return images.get(g).toString().substring(6);
+    }
 
     public void imagenes() {
         //Toma las fotografias que esten en la carpeta y las asigna a una lista de imagenesString sDirectorio = System.getProperty("user.dir")+"\\Images";
-        String sDirectorio = System.getProperty("user.dir") + "\\Images";
+        String sDirectorio = SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken";
         File f = new File(sDirectorio);
         // Recuperamos la lista de ficheros
         File[] ficheros = f.listFiles();
@@ -313,8 +339,11 @@ public class MainController implements MouseListener, MouseMotionListener {
         if (f.exists()) {
             for (int x = 0; x < ficheros.length; x++) {
                 try {
-                    //Se colocan las imagenes en la lista
-                    images.add(new javax.swing.ImageIcon(ficheros[x].toURL()));
+                    if (ficheros[x].toString().endsWith(".jpg")) {
+                        
+                        //Se colocan las imagenes en la lista
+                        images.add(new javax.swing.ImageIcon(ficheros[x].toURL()));
+                    }
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -326,21 +355,20 @@ public class MainController implements MouseListener, MouseMotionListener {
     }
 
     //Pone la imagen en el label como preview de la foto, en caso de no haber una foto pone una imagen de que no hay fotos que mostrar
-/*
     public Icon getPreview(int num) {
-        nofoto = new javax.swing.ImageIcon(System.getProperty("user.dir") + "\\src\\smartcamera\\Images\\GUI\\nofoto.gif");//foto en caso de que no haya una foto que mostrar
+        nofoto = new javax.swing.ImageIcon(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "GUI" + File.separator + "nofoto.gif");//foto en caso de que no haya una foto que mostrar
         if (num >= 0 & num < images.size())//en caso de que si hayan fotos
         {
             //coloca la imagen que se desea en el label con el tamaño del label
-            Image mini = images.get(num).getImage().getScaledInstance(view.getPhoto().getWidth(), view.getPhoto().getHeight(), Image.SCALE_AREA_AVERAGING);
+            Image mini = images.get(num).getImage();
             return new ImageIcon(mini);
         } else {
             //coloca la imagen en 
-            Image mini = nofoto.getImage().getScaledInstance(view.getPhoto().getWidth(), view.getPhoto().getHeight(), Image.SCALE_AREA_AVERAGING);
+            Image mini = nofoto.getImage();
             return new ImageIcon(mini);
         }
     }
-*/
+
     /**
      * A Class for video on JPanel
      */

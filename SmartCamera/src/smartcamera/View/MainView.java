@@ -15,6 +15,7 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -31,8 +32,6 @@ public class MainView extends javax.swing.JFrame {
     // Image
     public static Image backgroundImage;
     public static BufferedImage _bufImage = null;
-
-    
 
     // Enum
     public static enum Shape {
@@ -53,7 +52,7 @@ public class MainView extends javax.swing.JFrame {
     public static State _state = State.IDLE;
     public static Point _start = null;
     public static Point _end = null;
-    
+
     private JPanel drawPanel = null;
 
     public MainView() {
@@ -73,23 +72,22 @@ public class MainView extends javax.swing.JFrame {
                 if (_bufImage == null) {
                     int w = this.getWidth();
                     int h = this.getHeight();
-                    
+
                     _bufImage = new BufferedImage(drawPanel.getWidth(), drawPanel.getHeight(), BufferedImage.TRANSLUCENT);
                     //_bufImage = new BufferedImage(1024, 600, BufferedImage.TRANSLUCENT);
-                    
+
                     //_bufImage = new BufferedImage(photoView.getWidth(), photoView.getHeight(), BufferedImage.TRANSLUCENT);
                     //Graphics2D gc = _bufImage.createGraphics();
                 }
-                
-                
-                g2.drawImage(_bufImage, 0, 0,drawPanel.getWidth(),drawPanel.getHeight(),null);
-                
+
+                g2.drawImage(_bufImage, 0, 0, drawPanel.getWidth(), drawPanel.getHeight(), null);
+
                 if (_state == State.DRAGGING) {
                     g2.drawLine(_start.x, _start.y, _end.x, _end.y);
                 }
-                
+
             }
-            
+
             public Dimension getPreferredSize() {
                 return new Dimension(1024, 900);
             }
@@ -97,9 +95,8 @@ public class MainView extends javax.swing.JFrame {
         };
         drawPanel.setLayout(new FlowLayout());
         initComponents();
-        
+
         photoView.add(drawPanel);
-               
 
     }
 
@@ -149,6 +146,13 @@ public class MainView extends javax.swing.JFrame {
         noColorButton = new javax.swing.JLabel();
         goToCameraButton = new javax.swing.JLabel();
         galleryButton2 = new javax.swing.JLabel();
+        galleryPanel = new javax.swing.JPanel();
+        next = new javax.swing.JLabel();
+        back = new javax.swing.JLabel();
+        photo = new javax.swing.JLabel();
+        goToCameraButton2 = new javax.swing.JLabel();
+        exitButton3 = new javax.swing.JLabel();
+        trash = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -197,7 +201,7 @@ public class MainView extends javax.swing.JFrame {
         );
         livePanelLayout.setVerticalGroup(
             livePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 472, Short.MAX_VALUE)
         );
 
         joystickButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -334,6 +338,67 @@ public class MainView extends javax.swing.JFrame {
 
         panelsContainer.addTab("EditView", editViewPanel);
 
+        next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartcamera/Images/GUI/1430135734_circle_next_arrow_disclosure_-128.png"))); // NOI18N
+
+        back.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartcamera/Images/GUI/1430135689_circle_back_arrow_-128.png"))); // NOI18N
+
+        photo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        goToCameraButton2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        goToCameraButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartcamera/Images/GUI/1430030566_Windows_Live_Gallery.png"))); // NOI18N
+
+        exitButton3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        exitButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartcamera/Images/GUI/1430019599_Log Out.png"))); // NOI18N
+
+        trash.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        trash.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartcamera/Images/GUI/1430138205_24-Empty Trash.png"))); // NOI18N
+
+        javax.swing.GroupLayout galleryPanelLayout = new javax.swing.GroupLayout(galleryPanel);
+        galleryPanel.setLayout(galleryPanelLayout);
+        galleryPanelLayout.setHorizontalGroup(
+            galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, galleryPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(galleryPanelLayout.createSequentialGroup()
+                        .addComponent(goToCameraButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(trash, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(galleryPanelLayout.createSequentialGroup()
+                        .addComponent(back)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(photo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(next)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, galleryPanelLayout.createSequentialGroup()
+                        .addComponent(exitButton3)
+                        .addContainerGap())))
+        );
+        galleryPanelLayout.setVerticalGroup(
+            galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, galleryPanelLayout.createSequentialGroup()
+                .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(galleryPanelLayout.createSequentialGroup()
+                        .addGap(194, 194, 194)
+                        .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(back, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(next))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE))
+                    .addGroup(galleryPanelLayout.createSequentialGroup()
+                        .addComponent(photo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(exitButton3, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, galleryPanelLayout.createSequentialGroup()
+                        .addGroup(galleryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(goToCameraButton2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(trash, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())))
+        );
+
+        panelsContainer.addTab("GalleryView", galleryPanel);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -352,24 +417,24 @@ public class MainView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public  JPanel getDrawPanel() {
+    public JPanel getDrawPanel() {
         return drawPanel;
     }
 
-    public  Image getBackgroundImage() {
+    public Image getBackgroundImage() {
         return backgroundImage;
     }
 
-    public  void setBackgroundImage(Image backgroundImage) {
+    public void setBackgroundImage(Image backgroundImage) {
         this.backgroundImage = backgroundImage;
         photoView.repaint();
     }
 
-    public  BufferedImage getBufImage() {
+    public BufferedImage getBufImage() {
         return _bufImage;
     }
 
-    public  void setBufImage(BufferedImage _bufImage) {
+    public void setBufImage(BufferedImage _bufImage) {
         this._bufImage = _bufImage;
     }
 
@@ -390,12 +455,42 @@ public class MainView extends javax.swing.JFrame {
     }
 
     public JLabel getExitButton2() {
-       
+
         return exitButton2;
-        
+
     }
-    
-    
+
+    public JLabel getBack() {
+        return back;
+    }
+
+    public JLabel getExitButton3() {
+        return exitButton3;
+    }
+
+    public JPanel getGalleryPanel() {
+        return galleryPanel;
+    }
+
+    public JLabel getGoToCameraButton2() {
+        return goToCameraButton2;
+    }
+
+    public JLabel getNext() {
+        return next;
+    }
+
+    public JLabel getPhoto() {
+        return photo;
+    }
+
+    public JLabel getTrash() {
+        return trash;
+    }
+
+    public void setPhoto(Icon image) {
+        this.photo.setIcon(image);
+    }
 
     public JLabel getFourButton() {
         return fourButton;
@@ -460,11 +555,6 @@ public class MainView extends javax.swing.JFrame {
     public JPanel getPanelName() {
         return panelName;
     }
-    
-    
-    
-    
-    
 
     /**
      * The Getter and Setter of all vars
@@ -506,27 +596,34 @@ public class MainView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ViewLivePanel;
+    private javax.swing.JLabel back;
     private javax.swing.JLabel colorButton;
     private javax.swing.JLabel editButton;
     private javax.swing.JPanel editViewPanel;
     private javax.swing.JLabel eraseButton;
     private javax.swing.JLabel exitButton;
     private javax.swing.JLabel exitButton2;
+    private javax.swing.JLabel exitButton3;
     private javax.swing.JLabel fourButton;
     private javax.swing.JLabel galleryButton;
     private javax.swing.JLabel galleryButton2;
+    private javax.swing.JPanel galleryPanel;
     private javax.swing.JLabel goToCameraButton;
+    private javax.swing.JLabel goToCameraButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel joystick;
     private javax.swing.JLabel joystickButton;
     private javax.swing.JPanel livePanel;
+    private javax.swing.JLabel next;
     private javax.swing.JLabel noColorButton;
     private javax.swing.JPanel panelName;
     private javax.swing.JTabbedPane panelsContainer;
+    private javax.swing.JLabel photo;
     private javax.swing.JPanel photoView;
     private javax.swing.JLabel saveButton;
     private javax.swing.JLabel takePhotoButton;
     private javax.swing.JLabel threeButton;
+    private javax.swing.JLabel trash;
     // End of variables declaration//GEN-END:variables
 }
