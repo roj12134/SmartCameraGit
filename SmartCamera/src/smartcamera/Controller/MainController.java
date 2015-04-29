@@ -131,6 +131,12 @@ public class MainController implements MouseListener, MouseMotionListener {
             // Exit System
             System.exit(0);
 
+<<<<<<< HEAD
+=======
+        } else if (e.getSource() == view.getEditButton()) {
+           
+
+>>>>>>> origin/master
         } else if (e.getSource() == view.getGoToCameraButton() || e.getSource() == view.getGoToCameraButton2()) {
             view.getPanelsContainer().removeAll();
             view.getPanelsContainer().add(view.getViewLivePanel());
@@ -172,7 +178,7 @@ public class MainController implements MouseListener, MouseMotionListener {
                                 view.getPhotoView().getWidth(), view.getPhotoView().getHeight()));
 
                 // Save as JPEG
-                File file = new File(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Saved" + File.separator + "screencapture"+getTimeNow()+".jpg");
+                File file = new File(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Save" + File.separator + "screencapture"+getTimeNow()+".jpg");
                 ImageIO.write(screencapture, "jpg", file);
 
             } catch (AWTException ex) {

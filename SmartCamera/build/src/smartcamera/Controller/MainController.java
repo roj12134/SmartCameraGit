@@ -54,7 +54,10 @@ public class MainController implements MouseListener, MouseMotionListener {
     private ArrayList<ImageIcon> images = new ArrayList<ImageIcon>();
     private ImageIcon nofoto;//el nombre lo dice todo
     int foto = 0, antFoto = 0;
+<<<<<<< HEAD
     private String sr="";
+=======
+>>>>>>> origin/master
 
     /**
      * Define vars of the program.
@@ -241,11 +244,28 @@ public class MainController implements MouseListener, MouseMotionListener {
             File[] ficheros = f.listFiles();
             antFoto = foto;
             //Este evento borra la imagen que este seleccionada en el preview
+<<<<<<< HEAD
             if (ficheros.length > 0) {
                 if (ficheros[antFoto].delete()) {
                     JOptionPane.showMessageDialog(null, "La imagen ha sido borrada.");
                 } else {
                     JOptionPane.showMessageDialog(null, "La imagen no se pudo borrar.");
+=======
+            if (images.size() > 0 && foto <= (images.size() - 2)) {
+                foto+=1;
+            } else if (images.size() > 0 && foto == (images.size()-1)) {
+                foto-=1;
+            } else if (images.size() == 1) {
+                foto = 0;
+            }
+            if (ficheros.length > 0 && ficheros.length<antFoto) {
+                if (ficheros[antFoto].toString().endsWith(".jpg")){
+                    if (ficheros[antFoto].delete()) {
+                        JOptionPane.showMessageDialog(null, "La imagen ha sido borrada.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "La imagen no se pudo borrar.");
+                    }
+>>>>>>> origin/master
                 }
             } 
             else {
@@ -344,7 +364,11 @@ public class MainController implements MouseListener, MouseMotionListener {
             for (int x = 0; x < ficheros.length; x++) {
                 try {
                     if (ficheros[x].toString().endsWith(".jpg")) {
+<<<<<<< HEAD
                         //System.out.println(ficheros[x].toString());
+=======
+                        System.out.println(ficheros[x].toString());
+>>>>>>> origin/master
                         //Se colocan las imagenes en la lista
                         images.add(new javax.swing.ImageIcon(ficheros[x].toURL()));
                     }
