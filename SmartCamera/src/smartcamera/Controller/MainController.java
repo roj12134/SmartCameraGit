@@ -131,12 +131,6 @@ public class MainController implements MouseListener, MouseMotionListener {
             // Exit System
             System.exit(0);
 
-<<<<<<< HEAD
-=======
-        } else if (e.getSource() == view.getEditButton()) {
-           
-
->>>>>>> origin/master
         } else if (e.getSource() == view.getGoToCameraButton() || e.getSource() == view.getGoToCameraButton2()) {
             view.getPanelsContainer().removeAll();
             view.getPanelsContainer().add(view.getViewLivePanel());
