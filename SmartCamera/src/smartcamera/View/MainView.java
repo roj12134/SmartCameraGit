@@ -201,7 +201,7 @@ public class MainView extends javax.swing.JFrame {
         );
         livePanelLayout.setVerticalGroup(
             livePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 472, Short.MAX_VALUE)
+            .addGap(0, 467, Short.MAX_VALUE)
         );
 
         joystickButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -245,7 +245,7 @@ public class MainView extends javax.swing.JFrame {
         ViewLivePanelLayout.setVerticalGroup(
             ViewLivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ViewLivePanelLayout.createSequentialGroup()
-                .addGap(0, 6, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(galleryButton)
                 .addGap(18, 18, 18)
                 .addComponent(editButton)
