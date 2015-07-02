@@ -270,7 +270,7 @@ public class MainController implements MouseListener, MouseMotionListener {
                 icon.paintIcon(null, g, 0, 0);
                 g.dispose();
 
-                try {
+                try { 
                     ImageIO.write(bi, "jpg", new File(path));
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "Error al crear foto " + ex, "Error al crear foto ", 0);
