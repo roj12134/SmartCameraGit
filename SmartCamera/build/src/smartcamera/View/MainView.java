@@ -5,6 +5,7 @@
  */
 package smartcamera.View;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -12,6 +13,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
@@ -44,7 +47,7 @@ public class MainView extends javax.swing.JFrame {
 
         IDLE, DRAGGING
     }
-
+    // Para dibujar en la imagen 
     private static final Shape INIIIAL_SHAPE = Shape.RECTANGLE;
     private static final Color INITIAL_COLOR = Color.RED;
     private static Shape _shape = INIIIAL_SHAPE;
@@ -55,6 +58,29 @@ public class MainView extends javax.swing.JFrame {
     public static Point _end = null;
 
     private JPanel drawPanel = null;
+
+    // /////////////////////////////////////////////////////////////
+    // Para el joystick
+    ////////////////////////////////////////////////////////////////
+    public static final long serialVersionUID = 1L;
+    //Maximum value for full horiz or vert position where centered is 0:
+    public static int joyOutputRange;
+    public static float joySize;     //joystick icon size
+    public static float joyWidth, joyHeight;
+    public static float joyCenterX, joyCenterY;  //Joystick displayed Center
+    //Display position for text feedback values:
+    public static int textHorizPos, textVertPos;
+    public static int fontSpace = 12;
+    public static float curJoyAngle;    //Current joystick angle
+    public static float curJoySize;     //Current joystick size
+    public static boolean isMouseTracking;
+    public static boolean leftMouseButton;
+    public static int mouseX, mouseY;
+    public static Stroke lineStroke = new BasicStroke(10, BasicStroke.CAP_ROUND,
+            BasicStroke.JOIN_ROUND);
+    public  final Point position ;
+    
+    // Fin Joystick 
 
     public MainView() {
         // Init photo
@@ -100,6 +126,23 @@ public class MainView extends javax.swing.JFrame {
 
         photoView.add(drawPanel);
 
+        // /////////////////////////////////////////////////////////////
+        // Para el joystick
+        ////////////////////////////////////////////////////////////////
+        this.joyOutputRange = 255;
+        this.position = new Point(); // Nuevo punto 
+        this.joySize = 250;
+        joyWidth = joySize;
+        joyHeight = joyWidth;
+        joystickPanel.setPreferredSize(new Dimension((int) joyWidth + 50,
+                (int) joyHeight + 0));
+        joyCenterX = joystickPanel.getPreferredSize().width / 2;
+        joyCenterY = joystickPanel.getPreferredSize().height / 2;
+        this.joySize = joyWidth / 2;
+        joystickPanel.setBackground(new Color(226, 226, 226));
+        
+        // Fin del Joystick 
+
     }
 
     /**
@@ -116,7 +159,6 @@ public class MainView extends javax.swing.JFrame {
         statusLabel = new javax.swing.JLabel();
         panelsContainer = new javax.swing.JTabbedPane();
         ViewLivePanel = new javax.swing.JPanel();
-        joystick = new javax.swing.JLabel();
         exitButton = new javax.swing.JLabel();
         takePhotoButton = new javax.swing.JLabel();
         livePanel = new javax.swing.JPanel();
@@ -125,6 +167,42 @@ public class MainView extends javax.swing.JFrame {
         threeButton = new javax.swing.JLabel();
         editButton = new javax.swing.JLabel();
         galleryButton = new javax.swing.JLabel();
+        joystickPanel = new javax.swing.JPanel(){
+
+            @Override
+            protected void paintComponent( Graphics geo3) {
+                super.paintComponent(geo3);
+                Graphics2D g23 = (Graphics2D) geo3;
+                g23.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+                g23.setColor(Color.LIGHT_GRAY);
+                g23.fillOval((int) (joyCenterX - joyWidth / 2),
+                    (int) (joyCenterY - joyHeight / 2),
+                    (int) joyWidth, (int) joyHeight);
+                //rotate and draw joystick line segment:
+                Graphics2D g34 = (Graphics2D) g23.create();
+                g34.translate(joyCenterX, joyCenterY);
+                g34.rotate(curJoyAngle);
+                g34.setColor(Color.GRAY);
+                g34.setStroke(lineStroke);
+                g34.drawLine(0, 0, (int) curJoySize, 0);
+                g34.dispose();
+                //
+                g23.setColor(Color.GRAY);
+                g23.fillOval((int) joyCenterX - 10, (int) joyCenterY - 10, 20, 20);
+                textHorizPos = 35;
+                textVertPos = (int) (joyCenterY - 50);
+                g23.drawString("Horizontal : ", textHorizPos, textVertPos);
+                textHorizPos += (6 * fontSpace);
+                g23.drawString(String.valueOf(position.x), textHorizPos, textVertPos);
+                textHorizPos = 35;
+                textVertPos += 12;
+                g23.drawString("Vertical : ", textHorizPos, textVertPos);
+                textHorizPos += (6 * fontSpace);
+                g23.drawString(String.valueOf(position.y), textHorizPos, textVertPos);
+            }
+
+        };
         editViewPanel = new javax.swing.JPanel();
         exitButton2 = new javax.swing.JLabel();
         colorButton = new javax.swing.JLabel();
@@ -188,9 +266,6 @@ public class MainView extends javax.swing.JFrame {
         panelsContainer.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
         panelsContainer.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
 
-        joystick.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        joystick.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartcamera/Images/GUI/1430019112_Nintendo_SNES.png"))); // NOI18N
-
         exitButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         exitButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartcamera/Images/GUI/1430019599_Log Out.png"))); // NOI18N
 
@@ -225,15 +300,28 @@ public class MainView extends javax.swing.JFrame {
         galleryButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         galleryButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartcamera/Images/GUI/1430028915_gallery.png"))); // NOI18N
 
+        joystickPanel.setBackground(new java.awt.Color(255, 153, 0));
+
+        javax.swing.GroupLayout joystickPanelLayout = new javax.swing.GroupLayout(joystickPanel);
+        joystickPanel.setLayout(joystickPanelLayout);
+        joystickPanelLayout.setHorizontalGroup(
+            joystickPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+        joystickPanelLayout.setVerticalGroup(
+            joystickPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout ViewLivePanelLayout = new javax.swing.GroupLayout(ViewLivePanel);
         ViewLivePanel.setLayout(ViewLivePanelLayout);
         ViewLivePanelLayout.setHorizontalGroup(
             ViewLivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ViewLivePanelLayout.createSequentialGroup()
-                .addGroup(ViewLivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(joystick, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(galleryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(ViewLivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(editButton, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+                    .addComponent(galleryButton, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+                    .addComponent(joystickPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(ViewLivePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ViewLivePanelLayout.createSequentialGroup()
@@ -255,8 +343,8 @@ public class MainView extends javax.swing.JFrame {
                 .addComponent(galleryButton)
                 .addGap(18, 18, 18)
                 .addComponent(editButton)
-                .addGap(28, 28, 28)
-                .addComponent(joystick, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(joystickPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(ViewLivePanelLayout.createSequentialGroup()
                 .addComponent(livePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -519,10 +607,6 @@ public class MainView extends javax.swing.JFrame {
         return goToCameraButton;
     }
 
-    public JLabel getJoystick() {
-        return joystick;
-    }
-
     public JLabel getJoystickButton() {
         return joystickButton;
     }
@@ -555,7 +639,6 @@ public class MainView extends javax.swing.JFrame {
         return eraseButton;
     }
 
-
     public JLabel getSaveButton() {
         return saveButton;
     }
@@ -571,9 +654,10 @@ public class MainView extends javax.swing.JFrame {
     public JPanel getColorPanelChoose() {
         return colorPanelChoose;
     }
-    
-    
-    
+
+    public JPanel getJoystickPanel() {
+        return joystickPanel;
+    }
 
     /**
      * The Getter and Setter of all vars
@@ -631,8 +715,8 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JLabel goToCameraButton;
     private javax.swing.JLabel goToCameraButton2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel joystick;
     private javax.swing.JLabel joystickButton;
+    private javax.swing.JPanel joystickPanel;
     private javax.swing.JPanel livePanel;
     private javax.swing.JLabel next;
     private javax.swing.JPanel panelName;

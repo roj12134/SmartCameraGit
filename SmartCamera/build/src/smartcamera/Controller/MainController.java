@@ -9,6 +9,7 @@ import java.awt.AWTException;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -22,6 +23,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +38,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.highgui.Highgui;
@@ -54,7 +57,7 @@ public class MainController implements MouseListener, MouseMotionListener {
     // The MVC
     private MainView view = null;
     private MainModel model = null;
-    private ArrayList<ImageIcon> images = new ArrayList<ImageIcon>();
+    private ArrayList<ImageIcon> imagesList = new ArrayList<ImageIcon>();
     private ImageIcon nofoto;//el nombre lo dice todo
     int foto = 0, antFoto = 0;
     private String sr = "";
@@ -80,10 +83,11 @@ public class MainController implements MouseListener, MouseMotionListener {
     RXTX portSerial = null;
 
     Robot robot = null;
-    
+
     // Color del lapiz
-    Color colorNew = new Color(255,255,255);
-    Color colorNow = new Color(255,255,255);
+    Color colorNew = new Color(255, 255, 255);
+    Color colorNow = new Color(255, 255, 255);
+
     public MainController(MainView mv, MainModel mm) {
 
         view = mv; // Instancio la vista aqui 
@@ -125,8 +129,12 @@ public class MainController implements MouseListener, MouseMotionListener {
         mv.getBack().addMouseListener(this);
         mv.getEditButton().addMouseListener(this);
         mv.getTrash().addMouseListener(this);
-        mv.getPhoto().addMouseListener(this);
+        mv.getPhoto().addMouseListener(this); // La foto que estoy viendo 
         mv.getColorButton().addMouseListener(this);
+
+        // Joystick 
+        mv.getJoystickPanel().addMouseMotionListener(this);
+        mv.getJoystickPanel().addMouseListener(this);
 
         // Instancio el puerto RXTX, donde me conectare, asi mismo 
         // Empezare a leer el puerto serial 
@@ -143,7 +151,7 @@ public class MainController implements MouseListener, MouseMotionListener {
         } catch (AWTException ex) {
             JOptionPane.showMessageDialog(null, "Error en clase robot, al momento de instanciarla " + ex, "Error en clase robot", 0);
         }
-        
+
         colorNow = colorNew;
         view.getColorPanelChoose().setBackground(colorNow);
     }
@@ -170,26 +178,7 @@ public class MainController implements MouseListener, MouseMotionListener {
 
         } else if (e.getSource() == view.getTakePhotoButton()) {
 
-            view.getPanelsContainer().removeAll();
-            view.getPanelsContainer().add(view.getEditViewPanel());
-            status = "EditPanel"; // Empieza en live Panel
-            takenPhoto = buff;
-            view.setBackgroundImage(takenPhoto); // Cambio y doy repaint
-            cleanPanel(); // Limpio si hay algo pintado 
-
-            /**
-             * Set the cursor on the middle of photoView Panel
-             */
-            robot.mouseMove(view.getPhotoView().getX() + view.getPhotoView().getWidth() / 2, (view.getPhotoView().getY() + view.getPanelName().getHeight() + 15) + (view.getPhotoView().getHeight() / 2));
-
-            // Guardarla en archivo 
-            // Save as JPEG
-            File file = new File(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken" + File.separator + "take" + getTimeNow() + ".jpg");
-            try {
-                ImageIO.write(takenPhoto, "jpg", file);
-            } catch (IOException ex) {
-                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+           takePhotoAction();
 
         } else if (e.getSource() == view.getEraseButton()) {
 
@@ -217,21 +206,21 @@ public class MainController implements MouseListener, MouseMotionListener {
             status = "GalleryTaken"; // Se va al status de gallery taken
         } else if (e.getSource() == view.getBack()) {
             //Este evento pondra la siguiente fotografia en el preview
-            if (images.size() > 0 && foto >= 1) {
+            if (imagesList.size() > 0 && foto >= 1) {
                 foto -= 1;
-            } else if (images.size() > 0 && foto == 0) {
-                foto = images.size() - 1;
-            } else if (images.size() == 1) {
+            } else if (imagesList.size() > 0 && foto == 0) {
+                foto = imagesList.size() - 1;
+            } else if (imagesList.size() == 1) {
                 foto = 0;
             }
             view.setPhoto(getPreview(foto));//muestra un preview de la  foto que este seleccionada de la carpeta
         } else if (e.getSource() == view.getNext()) {
             //Este evento pondra la siguiente fotografia en el preview
-            if (images.size() > 0 && foto < images.size() - 1) {
+            if (imagesList.size() > 0 && foto < imagesList.size() - 1) {
                 foto += 1;
-            } else if (images.size() > 0 && foto == images.size() - 1) {
+            } else if (imagesList.size() > 0 && foto == imagesList.size() - 1) {
                 foto = 0;
-            } else if (images.size() == 1) {
+            } else if (imagesList.size() == 1) {
                 foto = 0;
             }
             view.setPhoto(getPreview(foto));//muestra un preview de la  foto que este seleccionada de la carpeta
@@ -251,23 +240,88 @@ public class MainController implements MouseListener, MouseMotionListener {
             } else {
                 JOptionPane.showMessageDialog(null, "No hay imagenes que puedan ser borradas.");
             }
-            if (images.isEmpty()) {
+            if (imagesList.isEmpty()) {
                 foto = 0;
-            } else if ((images.size() - 1) >= 0 && foto == (images.size() - 2)) {
+            } else if ((imagesList.size() - 1) >= 0 && foto == (imagesList.size() - 2)) {
                 foto = 0;
             } else {
                 foto += 1;
             }
-            images.remove(antFoto);
-            if (foto >= images.size() || foto < 0) {
+            imagesList.remove(antFoto);
+            if (foto >= imagesList.size() || foto < 0) {
                 foto = 0;
             }
             view.setPhoto(getPreview(foto));//muestra un preview de la  foto que este seleccionada de la carpeta
 
         } else if (e.getSource() == view.getPhoto()) {
-            //Aquí se abrira la imagen en el panel para ser editada
+            if (status.equalsIgnoreCase("GalleryTaken")) {
+
+                String path = "";
+
+                // esto verifica si puede abrir archivos la computadora 
+                path = (SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Edited" + File.separator + "edit.jpg");//
+                ImageIcon icon = imagesList.get(foto); // La foto de ahorita 
+
+                BufferedImage bi = new BufferedImage(
+                        icon.getIconWidth(),
+                        icon.getIconHeight(),
+                        BufferedImage.TYPE_INT_RGB);
+                Graphics g = bi.createGraphics();
+                // paint the Icon to the BufferedImage.
+                icon.paintIcon(null, g, 0, 0);
+                g.dispose();
+
+                try {
+                    ImageIO.write(bi, "jpg", new File(path));
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Error al crear foto " + ex, "Error al crear foto ", 0);
+
+                }
+
+                // En este punto ya tengo la imagen como BufferImage 
+                view.getPanelsContainer().removeAll();
+                view.getPanelsContainer().add(view.getEditViewPanel());
+                status = "EditPanel"; // Empieza en live Panel
+                takenPhoto = bi;  // La foto que editare 
+                view.setBackgroundImage(takenPhoto); // Cambio y doy repaint
+                cleanPanel(); // Limpio si hay algo pintado 
+
+                /**
+                 * Set the cursor on the middle of photoView Panel
+                 */
+                robot.mouseMove(view.getPhotoView().getX() + view.getPhotoView().getWidth() / 2, (view.getPhotoView().getY() + view.getPanelName().getHeight() + 15) + (view.getPhotoView().getHeight() / 2));
+
+            } else if (status.equalsIgnoreCase("GallerySaved")) {
+
+                String path = "";
+                // Codigo para abrir el archivo  
+                if (Desktop.isDesktopSupported()) {
+                    try {
+                        // esto verifica si puede abrir archivos la computadora 
+                        path = (SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Opened" + File.separator + "open.jpg");//
+                        ImageIcon icon = imagesList.get(foto); // La foto de ahorita 
+
+                        BufferedImage bi = new BufferedImage(
+                                icon.getIconWidth(),
+                                icon.getIconHeight(),
+                                BufferedImage.TYPE_INT_RGB);
+                        Graphics g = bi.createGraphics();
+                        // paint the Icon to the BufferedImage.
+                        icon.paintIcon(null, g, 0, 0);
+                        g.dispose();
+                        ImageIO.write(bi, "jpg", new File(path));
+
+                        Desktop.getDesktop().open(new File(path));
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Error en abrir archivo " + ex + "\n" + path, "Error en abrir archivo", 0);
+
+                    }
+
+                }
+
+            }
         } else if (e.getSource() == view.getColorButton()) {
-             changeColor();
+            changeColor();
 
         }
 
@@ -275,6 +329,12 @@ public class MainController implements MouseListener, MouseMotionListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
+
+        if (e.getSource() == view.getJoystickPanel()) {
+            view.leftMouseButton = SwingUtilities.isLeftMouseButton(e);
+            mouseCheck(e);
+
+        }
 
     }
 
@@ -331,8 +391,70 @@ public class MainController implements MouseListener, MouseMotionListener {
 
             MainView._start = e.getPoint();
 
+        } else if (e.getSource() == view.getJoystickPanel()) {
+            mouseCheck(e);
         }
 
+    }
+
+    // Metodo usado para joystick 
+    private void mouseCheck(final MouseEvent e) {
+        view.mouseX = e.getX();
+        view.mouseY = e.getY();
+        float dx = view.mouseX - view.joyCenterX;
+        float dy = view.mouseY - view.joyCenterY;
+        if (view.leftMouseButton) {
+            view.isMouseTracking = true;
+        } else {
+            view.isMouseTracking = false;
+        }
+        if (view.isMouseTracking) {
+            view.curJoyAngle = (float) Math.atan2(dy, dx);
+            view.curJoySize = (float) Point.distance(view.mouseX, view.mouseY,
+                    view.joyCenterX, view.joyCenterY);
+        } else {
+            view.curJoySize = 0;
+        }
+        if (view.curJoySize > view.joySize) {
+            view.curJoySize = view.joySize;
+        }
+        view.position.x = (int) (view.joyOutputRange * (Math.cos(view.curJoyAngle)
+                * view.curJoySize) / view.joySize);
+        view.position.y = (int) (view.joyOutputRange * (-(Math.sin(view.curJoyAngle)
+                * view.curJoySize) / view.joySize));
+        //SwingUtilities.getRoot(view.getJoystickPanel().getRootPane()).repaint();
+        view.position.x += 255;
+        view.position.x /= 2;
+
+        view.position.y += 255;
+        view.position.y /= 2;
+        view.getJoystickPanel().repaint();
+
+    }
+    /**
+     * Function which takes photo 
+     */
+    public void takePhotoAction(){
+         view.getPanelsContainer().removeAll();
+            view.getPanelsContainer().add(view.getEditViewPanel());
+            status = "EditPanel"; // Empieza en live Panel
+            takenPhoto = buff;
+            view.setBackgroundImage(takenPhoto); // Cambio y doy repaint
+            cleanPanel(); // Limpio si hay algo pintado 
+
+            /**
+             * Set the cursor on the middle of photoView Panel
+             */
+            robot.mouseMove(view.getPhotoView().getX() + view.getPhotoView().getWidth() / 2, (view.getPhotoView().getY() + view.getPanelName().getHeight() + 15) + (view.getPhotoView().getHeight() / 2));
+
+            // Guardarla en archivo 
+            // Save as JPEG
+            File file = new File(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken" + File.separator + "take" + getTimeNow() + ".jpg");
+            try {
+                ImageIO.write(takenPhoto, "jpg", file);
+            } catch (IOException ex) {
+                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            }
     }
 
     /**
@@ -350,7 +472,7 @@ public class MainController implements MouseListener, MouseMotionListener {
 
     //devuelve la ruta de acceso
     public String getFile(int g) {
-        return images.get(g).toString().substring(6);
+        return imagesList.get(g).toString().substring(6);
     }
 
     public void imagenes(String src) {
@@ -360,14 +482,14 @@ public class MainController implements MouseListener, MouseMotionListener {
         //System.out.println(""+sDirectorio+" "+sr);
         // Recuperamos la lista de ficheros
         File[] ficheros = f.listFiles();
-        images.clear();
+        imagesList.clear();
         if (f.exists()) {
             for (int x = 0; x < ficheros.length; x++) {
                 try {
                     if (ficheros[x].toString().endsWith(".jpg")) {
                         //System.out.println(ficheros[x].toString());
                         //Se colocan las imagenes en la lista
-                        images.add(new javax.swing.ImageIcon(ficheros[x].toURL()));
+                        imagesList.add(new javax.swing.ImageIcon(ficheros[x].toURL()));
                     }
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
@@ -382,10 +504,10 @@ public class MainController implements MouseListener, MouseMotionListener {
     //Pone la imagen en el label como preview de la foto, en caso de no haber una foto pone una imagen de que no hay fotos que mostrar
     public Icon getPreview(int num) {
         nofoto = new javax.swing.ImageIcon(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "GUI" + File.separator + "noPhoto.png");//foto en caso de que no haya una foto que mostrar
-        if (num >= 0 & num < images.size())//en caso de que si hayan fotos
+        if (num >= 0 & num < imagesList.size())//en caso de que si hayan fotos
         {
             //coloca la imagen que se desea en el label con el tamaño del label
-            Image mini = images.get(num).getImage();
+            Image mini = imagesList.get(num).getImage();
             return new ImageIcon(mini);
         } else {
             //coloca la imagen en 
@@ -439,8 +561,8 @@ public class MainController implements MouseListener, MouseMotionListener {
             int redValue = RXTX.dataList.get(0);
             int greenValue = RXTX.dataList.get(1);
             int blueValue = RXTX.dataList.get(2);
-            colorNew = new Color(redValue,greenValue,blueValue);
-            
+            colorNew = new Color(redValue, greenValue, blueValue);
+
             // Vamos a ver el boton de colorear 
             if (toBinary(RXTX.dataList.get(7)).substring(5, 6).equalsIgnoreCase("1")) {
                 changeColor();
@@ -451,8 +573,16 @@ public class MainController implements MouseListener, MouseMotionListener {
                 savePhotoEdited();
 
             }
-            
 
+        }
+        else if (status.equalsIgnoreCase("LivePanel")){
+            // Live Panel 
+            // Vamos a ver el boton de tomar foto  
+            if (toBinary(RXTX.dataList.get(7)).substring(3, 4).equalsIgnoreCase("1")) {
+                takePhotoAction(); // Toma la foto 
+
+            }
+            
         }
     }
 
@@ -500,7 +630,7 @@ public class MainController implements MouseListener, MouseMotionListener {
             // Save as JPEG
             File file = new File(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Saved" + File.separator + "save" + getTimeNow() + ".jpg");
             ImageIO.write(screencapture, "jpg", file);
-            
+
             // go to the Main
             view.getPanelsContainer().removeAll();
             view.getPanelsContainer().add(view.getViewLivePanel());
@@ -514,11 +644,11 @@ public class MainController implements MouseListener, MouseMotionListener {
         }
 
     }
-    
+
     /**
      * Change Color to draw
      */
-    public void changeColor(){
+    public void changeColor() {
         colorNow = colorNew;
         view.getColorPanelChoose().setBackground(colorNow);
     }

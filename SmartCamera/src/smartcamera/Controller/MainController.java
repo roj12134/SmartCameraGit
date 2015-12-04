@@ -177,26 +177,7 @@ public class MainController implements MouseListener, MouseMotionListener {
 
         } else if (e.getSource() == view.getTakePhotoButton()) {
 
-            view.getPanelsContainer().removeAll();
-            view.getPanelsContainer().add(view.getEditViewPanel());
-            status = "EditPanel"; // Empieza en live Panel
-            takenPhoto = buff;
-            view.setBackgroundImage(takenPhoto); // Cambio y doy repaint
-            cleanPanel(); // Limpio si hay algo pintado 
-
-            /**
-             * Set the cursor on the middle of photoView Panel
-             */
-            robot.mouseMove(view.getPhotoView().getX() + view.getPhotoView().getWidth() / 2, (view.getPhotoView().getY() + view.getPanelName().getHeight() + 15) + (view.getPhotoView().getHeight() / 2));
-
-            // Guardarla en archivo 
-            // Save as JPEG
-            File file = new File(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken" + File.separator + "take" + getTimeNow() + ".jpg");
-            try {
-                ImageIO.write(takenPhoto, "jpg", file);
-            } catch (IOException ex) {
-                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+           takePhotoAction();
 
         } else if (e.getSource() == view.getEraseButton()) {
 
@@ -289,7 +270,7 @@ public class MainController implements MouseListener, MouseMotionListener {
                 icon.paintIcon(null, g, 0, 0);
                 g.dispose();
 
-                try {
+                try { 
                     ImageIO.write(bi, "jpg", new File(path));
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "Error al crear foto " + ex, "Error al crear foto ", 0);
@@ -449,6 +430,31 @@ public class MainController implements MouseListener, MouseMotionListener {
         view.getJoystickPanel().repaint();
 
     }
+    /**
+     * Function which takes photo 
+     */
+    public void takePhotoAction(){
+         view.getPanelsContainer().removeAll();
+            view.getPanelsContainer().add(view.getEditViewPanel());
+            status = "EditPanel"; // Empieza en live Panel
+            takenPhoto = buff;
+            view.setBackgroundImage(takenPhoto); // Cambio y doy repaint
+            cleanPanel(); // Limpio si hay algo pintado 
+
+            /**
+             * Set the cursor on the middle of photoView Panel
+             */
+            robot.mouseMove(view.getPhotoView().getX() + view.getPhotoView().getWidth() / 2, (view.getPhotoView().getY() + view.getPanelName().getHeight() + 15) + (view.getPhotoView().getHeight() / 2));
+
+            // Guardarla en archivo 
+            // Save as JPEG
+            File file = new File(SmartCamera.getPathJar() + File.separator + "src" + File.separator + "smartcamera" + File.separator + "Images" + File.separator + "Taken" + File.separator + "take" + getTimeNow() + ".jpg");
+            try {
+                ImageIO.write(takenPhoto, "jpg", file);
+            } catch (IOException ex) {
+                Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
 
     /**
      * Este metodo lo que hace es que calcula el tiempo en milisegundos y lo
@@ -567,6 +573,15 @@ public class MainController implements MouseListener, MouseMotionListener {
 
             }
 
+        }
+        else if (status.equalsIgnoreCase("LivePanel")){
+            // Live Panel 
+            // Vamos a ver el boton de tomar foto  
+            if (toBinary(RXTX.dataList.get(7)).substring(3, 4).equalsIgnoreCase("1")) {
+                takePhotoAction(); // Toma la foto 
+
+            }
+            
         }
     }
 

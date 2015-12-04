@@ -42,7 +42,7 @@ public class RXTX {
 
         if (isWindows() || isMac()) {
 
-            SerialPortID = "C0M7";
+            SerialPortID = "C0M10";
             
             Enumeration ports = CommPortIdentifier.getPortIdentifiers();
 
@@ -123,7 +123,6 @@ public class RXTX {
     public class SerialReader implements Runnable {
 
         private InputStream in;
-        private boolean keyCorrect = false;  // Variable inicialmente falsa
         private int inData = -1;
 
         public SerialReader(InputStream in) {
